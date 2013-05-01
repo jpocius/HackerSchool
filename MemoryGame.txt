@@ -1,0 +1,223 @@
+
+//This is a memory game. There are 4 rounds, and the user gets 2 chances each round. The user can get a hint before the second try if they so choose. The program prints 4, 5, 6, or 7 numbers, and the user has to memorize them and print them back to the program for it to validate.
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            int nChances = 0;
+
+            int[] numbersR1 = new int[4];
+            int[] numbersR2 = new int[5];
+            int[] numbersR3 = new int[6];
+            int[] numbersR4 = new int[7];
+            int[] numbersRC = new int[10];
+
+            int nRound = 1;
+
+            numbersRC = numbersR1;
+
+            Console.WriteLine("Let's play the Number Memory Game!");
+            Console.WriteLine(" ");
+
+            FillArrays(numbersR1, numbersR2, numbersR3, numbersR4);
+
+            Console.WriteLine(" ");
+
+            while (nChances < 2)
+            {
+
+                //The numbers to be recalled will print only before the first try.
+                if (nChances == 0)
+                {
+                    Console.WriteLine("This is round " + nRound + ". Type in the numbers below.");
+                    Console.WriteLine(" ");
+                    PrintNumbers(numbersRC);
+                }
+
+                //This array stores the numbers that the user enters.
+                int[] userNumbers = ReadNumbers(numbersRC);
+
+                Console.WriteLine(" ");
+
+                //This validates that the user enters the correct numbers in the correct order.
+                bool isValid = ValidateUserNumbers(numbersRC, userNumbers);
+
+                Console.WriteLine(" ");
+
+                //This is what happens when the user enters the correct numbers in the correct order.
+                if (isValid == true)
+                {
+                    GoToNextRound(ref nRound, ref numbersRC, numbersR2, numbersR3, numbersR4, ref nChances);
+                }
+
+                //The user gets another chance if they get it wrong the first time.
+                else
+                {
+                    nChances++;
+
+                    if (nChances == 1)
+                    {
+                        Console.WriteLine("You get one more try.");
+                        Console.WriteLine(" ");
+
+                        GetAHint(numbersRC);
+                    }
+                }
+
+                if (nRound > 4)
+                {
+                    break;
+                }
+
+            }
+
+            Console.WriteLine("Game over!");
+
+        }
+
+        //This function increments the rounds.
+        private static void GoToNextRound(ref int nRound, ref int[] numbersRC, int[] numbersR2, int[] numbersR3, int[] numbersR4, ref int nChances)
+        {
+            nRound++;
+
+            if (nRound == 2)
+            {
+                numbersRC = numbersR2;
+            }
+
+            if (nRound == 3)
+            {
+                numbersRC = numbersR3;
+            }
+            if (nRound == 4)
+            {
+                numbersRC = numbersR4;
+            }
+
+            nChances = 0;
+        }
+
+        //This function generates random numbers for each round.
+        private static void FillArrays(int[] numbersR1, int[] numbersR2, int [] numbersR3, int[] numbersR4)
+        {
+          
+            Random rnd = new Random();
+
+
+            for (int element = 0; element < 4; element++)
+            {
+                int n = rnd.Next(20);
+                numbersR1[element] = n;
+            }
+
+            for (int element = 0; element < 5; element++)
+            {
+                int n = rnd.Next(20);
+                numbersR2[element] = n;
+            }
+
+            for (int element = 0; element < 6; element++)
+            {
+                int n = rnd.Next(20);
+                numbersR3[element] = n;
+            }
+            
+            for (int element = 0; element < 7; element++)
+            {
+                int n = rnd.Next(20);
+                numbersR4[element] = n;
+            }
+        }
+
+        //This functions prints the numbers to be memorized.
+        private static void PrintNumbers(int[] numbersRC)
+        {
+
+            for (int n = 0; n < numbersRC.Length; n++)
+            {
+                Console.Write(numbersRC[n]);
+                Console.Write(" ");
+            }
+
+        }
+
+        //This function reads the numbers from the user.
+        private static int[] ReadNumbers(int[] numbersRC)
+        {
+
+            int[] userNumbers = new int[numbersRC.Length];
+
+            Console.WriteLine(" ");
+
+            Console.WriteLine(" ");
+
+            for (int n = 0; n < numbersRC.Length; n++)
+            {
+                string sNumber = Console.ReadLine();
+                int nNumber = int.Parse(sNumber);
+
+                userNumbers[n] = nNumber;
+
+                if (n == 0)
+                {
+                    Console.Clear();
+
+                    Console.WriteLine(nNumber);
+                }
+            }
+
+            return userNumbers;
+        }
+
+        //This function validates that the user has entered the correct numbers in the correct order.
+        private static bool ValidateUserNumbers(int[] numbersRC, int[] userNumbers)
+        {
+            bool isValid = true;
+
+            for (int n = 0; n < numbersRC.Length; n++)
+            {
+                if (userNumbers[n] == numbersRC[n])
+                {
+                    isValid = true;
+
+                }
+                else
+                {
+                    isValid = false;
+                    Console.WriteLine("You got it wrong!");
+                    break;
+                }
+            }
+
+            if (isValid == true)
+            {
+                Console.WriteLine("You got it right!");
+            }
+
+            return isValid;
+        }
+
+        //This function gives the user a hint, if he or she wants one.
+        private static void GetAHint(int[] numbersRC)
+        {
+            Console.WriteLine("Would you like a hint? Please type Yes or No.");
+
+            string sAnswer = Console.ReadLine();
+            Console.WriteLine(" ");
+
+            if (sAnswer.ToLower() == "yes")
+            {
+                Console.WriteLine("The first two numbers are: " + numbersRC[0] + " " + numbersRC[1]);
+            }
+            else if (sAnswer.ToLower() != "yes" || sAnswer.ToLower() != "no")
+            {
+                Console.WriteLine("Invalid answer. No hint for you!");
+            }
+            else
+            {
+                Console.WriteLine("Okay. Last chance!");
+            }
+        }
+    }
+
